@@ -23,4 +23,16 @@ class StoreCategoryRequest extends FormRequest
             ],
         ];
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'The category name is required.',
+            'name.max' => 'The category name cannot be longer than 255 characters.',
+            'parent_id.exists' => 'The selected parent category does not exist.',
+        ];
+    }
 }

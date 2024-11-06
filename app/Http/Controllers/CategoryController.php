@@ -26,10 +26,17 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
-        $this->categoryService->create($request->validated());
+        try {
+            $this->categoryService->create($request->validated());
 
-        return redirect()
-            ->route('categories.create')
-            ->with('success', 'Category created successfully.');
+            return redirect()
+                ->route('categories.create')
+                ->with('success', 'Category created successfully.');
+        } catch (\InvalidArgumentException $e) {
+            return redirect()
+                ->route('categories.create')
+                ->withInput()
+                ->withErrors(['parent_id' => $e->getMessage()]);
+        }
     }
 }

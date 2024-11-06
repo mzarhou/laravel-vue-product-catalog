@@ -28,7 +28,7 @@ class CategoryService implements CategoryServiceInterface
     public function create(array $data): Category
     {
         if (isset($data['parent_id'])) {
-            $parent = $this->categoryRepository->find($data['parent_id']);
+            $parent = $this->categoryRepository->find((int) $data['parent_id']);
             if (! $parent) {
                 throw new \InvalidArgumentException('Parent category not found');
             }
