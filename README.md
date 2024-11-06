@@ -22,15 +22,15 @@ A lightweight product catalog built with Laravel and Vue.js, demonstrating best 
 
 ## Technologies
 
-- PHP 7.x
-- Laravel 8.x
+- PHP 8.2+
+- Laravel 11.x
 - Vue.js 3.x
 - MySQL
-- PHPUnit for testing
+- Pest for testing
 
 ## Requirements
 
-- PHP >= 7.3
+- PHP >= 8.2+
 - MySQL >= 5.7
 - Node.js >= 12.x
 - Composer
@@ -44,18 +44,12 @@ git clone https://github.com/mzarhou/laravel-vue-product-catalog.git
 cd laravel-vue-product-catalog
 ```
 
-2. Install PHP dependencies
-```bash
-composer install
-```
-
-3. Setup environment file
+2. Setup environment file
 ```bash
 cp .env.example .env
-php artisan key:generate
 ```
 
-4. Configure your database in `.env`
+3. Configure your database in `.env` (or just use ```docker compose up --build -d```)
 ```
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -65,19 +59,9 @@ DB_USERNAME=your_username
 DB_PASSWORD=your_password
 ```
 
-5. Run database migrations
+4. Setup Project
 ```bash
-php artisan migrate
-```
-
-6. Install frontend dependencies
-```bash
-pnpm install
-```
-
-7. Create storage link for product images
-```bash
-php artisan storage:link
+./scripts/init.sh
 ```
 ## Usage
 
@@ -94,7 +78,7 @@ composer dev
 
 Create a new product via command line:
 ```bash
-php artisan product:create
+php artisan product:create <name> <description> <price> <image> <categories>...
 ```
 
 ## Testing
