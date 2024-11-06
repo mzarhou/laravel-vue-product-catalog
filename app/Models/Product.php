@@ -48,11 +48,9 @@ class Product extends Model
     /**
      * Get full image URL
      */
-    public function getImageUrl(): ?string
+    public function getImageUrl(): string
     {
-        return $this->image
-            ? asset('storage/'.$this->image)
-            : null;
+        return asset('storage/'.$this->image);
     }
 
     /**

@@ -29,36 +29,7 @@ const errors = ref({})
 const isSubmitting = ref(false)
 const { preview, handleFilePreview } = useFilePreview()
 
-const validateForm = () => {
-    errors.value = {}
-    let isValid = true
-
-    if (!formData.value.name.trim()) {
-        errors.value.name = 'Name is required'
-        isValid = false
-    }
-
-    if (!formData.value.description.trim()) {
-        errors.value.description = 'Description is required'
-        isValid = false
-    }
-
-    if (!formData.value.price || isNaN(formData.value.price) || formData.value.price <= 0) {
-        errors.value.price = 'Price must be a valid positive number'
-        isValid = false
-    }
-
-    if (!formData.value.categories.length) {
-        errors.value.categories = 'At least one category must be selected'
-        isValid = false
-    }
-
-    return isValid
-}
-
 const handleSubmit = async () => {
-    if (!validateForm()) return
-
     isSubmitting.value = true
 
     try {

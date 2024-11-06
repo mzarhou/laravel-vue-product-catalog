@@ -5,12 +5,6 @@
     <div class="bg-white shadow rounded-lg p-6">
         <h2 class="text-2xl font-bold mb-6">Create New Category</h2>
 
-        @if (session('success'))
-            <div class="p-4 rounded mb-6 bg-green-50 text-green-700">
-                {{ session('success') }}
-            </div>
-        @endif
-
         @if ($errors->any())
             <div class="p-4 rounded mb-6 bg-red-50 text-red-700">
                 <ul class="list-disc list-inside">

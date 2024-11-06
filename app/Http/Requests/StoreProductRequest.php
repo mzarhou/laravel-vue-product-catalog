@@ -17,7 +17,7 @@ class StoreProductRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
-            'image' => ['nullable', 'image', 'max:2048'], // 2MB max
+            'image' => ['required', 'image', 'max:2048'], // 2MB max
             'categories' => ['required', 'array', 'min:1'],
             'categories.*' => ['required', 'exists:categories,id'],
         ];
@@ -29,6 +29,9 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'image.required' => 'Product image is required.',
+            'image.image' => 'The file must be an image.',
+            'image.max' => 'The image must not be larger than 2MB.',
             'categories.required' => 'At least one category must be selected.',
             'categories.*.exists' => 'One or more selected categories are invalid.',
         ];

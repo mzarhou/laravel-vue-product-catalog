@@ -19,11 +19,14 @@ class ProductFactory extends Factory
      */
     public function definition(): array
     {
+        $image = UploadedFile::fake()->image('product.jpg', 640, 480);
+        $path = $image->store('products', 'public');
+
         return [
             'name' => ucfirst($this->faker->words(3, true)),
             'description' => $this->faker->paragraphs(2, true),
             'price' => $this->faker->randomFloat(2, 9.99, 999.99),
-            'image' => null,
+            'image' => $path,
         ];
     }
 

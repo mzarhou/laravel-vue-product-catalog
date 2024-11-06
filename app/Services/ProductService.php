@@ -22,36 +22,56 @@ class ProductService implements ProductServiceInterface
 
     public function create(array $data): Product
     {
+        if (! isset($data['image'])) {
+            throw new \RuntimeException('Product image is required.');
+        }
+
         $productData = [
             'name' => $data['name'],
             'description' => $data['description'],
             'price' => (float) $data['price'],
         ];
 
-        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+        // Handle image upload
+        if ($data['image'] instanceof UploadedFile) {
             $productData['image'] = $this->handleImageUpload($data['image']);
+        } elseif (is_string($data['image'])) {
+            // For CLI: image path is already processed and stored
+            $productData['image'] = $data['image'];
+        } else {
+            throw new \RuntimeException('Invalid image format provided.');
         }
 
-        /** @var Product $product */
-        $product = $this->productRepository->create($productData);
+        try {
+            /** @var Product $product */
+            $product = $this->productRepository->create($productData);
 
-        if (isset($data['categories'])) {
-            $this->productRepository->syncCategories($product->id, $data['categories']);
+            if (isset($data['categories'])) {
+                $this->productRepository->syncCategories(
+                    $product->id,
+                    $data['categories']
+                );
+                $product->load('categories');
+            }
+
+            return $product;
+        } catch (\Exception $e) {
+            // Clean up the uploaded image if product creation fails
+            if (isset($productData['image'])) {
+                Storage::disk('public')->delete($productData['image']);
+            }
+            throw $e;
         }
-
-        return $product->fresh(['categories']);
     }
 
     public function getPaginatedWithFilters(array $filters = []): LengthAwarePaginator
     {
-        $products = $this->productRepository->getPaginatedWithFilters($filters);
-        $products->through(function ($product) {
-            $product->image_url = $product->getImageUrl();
+        return $this->productRepository->getPaginatedWithFilters($filters)
+            ->through(function (Product $product) {
+                $product->image_url = $product->getImageUrl();
 
-            return $product;
-        });
-
-        return $products;
+                return $product;
+            });
     }
 
     public function findWithCategories(int $id): ?Product
@@ -68,7 +88,7 @@ class ProductService implements ProductServiceInterface
         }
 
         if ($product->image) {
-            $this->deleteImage($product->image);
+            Storage::disk('public')->delete($product->image);
         }
 
         return $this->productRepository->delete($id);
@@ -88,13 +108,5 @@ class ProductService implements ProductServiceInterface
         }
 
         return $path;
-    }
-
-    /**
-     * Delete product image
-     */
-    private function deleteImage(string $path): bool
-    {
-        return Storage::disk('public')->delete($path);
     }
 }
