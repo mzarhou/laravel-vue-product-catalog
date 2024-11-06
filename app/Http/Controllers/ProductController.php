@@ -27,7 +27,7 @@ class ProductController extends Controller
     public function index(Request $request): View
     {
         $filters = $request->only(['category_id', 'sort_price', 'per_page']);
-        $products = $this->productService->getPaginatedWithFilters($filters);
+        $products = $this->productService->getPaginatedWithFilters($filters)->appends(request()->query());
         $categories = $this->categoryService->getAllWithHierarchy();
 
         return view('products.index', compact('products', 'categories'));

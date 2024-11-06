@@ -44,7 +44,14 @@ class ProductService implements ProductServiceInterface
 
     public function getPaginatedWithFilters(array $filters = []): LengthAwarePaginator
     {
-        return $this->productRepository->getPaginatedWithFilters($filters);
+        $products = $this->productRepository->getPaginatedWithFilters($filters);
+        $products->through(function ($product) {
+            $product->image_url = $product->getImageUrl();
+
+            return $product;
+        });
+
+        return $products;
     }
 
     public function findWithCategories(int $id): ?Product
