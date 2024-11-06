@@ -42,7 +42,14 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        $this->productService->create($request->validated());
+        $product = $this->productService->create($request->validated());
+
+        if (request()->wantsJson()) {
+            return response()->json([
+                'message' => 'Product created successfully.',
+                'data' => $product,
+            ], 201);
+        }
 
         return redirect()
             ->route('products.index')
